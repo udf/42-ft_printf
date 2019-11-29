@@ -47,9 +47,9 @@ static void			find_segments(uint64_t base, struct symtab_command **symtab,
 		{
 			cmd_id = *((unsigned int *)
 				&((struct segment_command_64 *)lc)->segname[2]);
-			if (cmd_id == 0x4b4e494c)
+			if (cmd_id == 0x4b4e494c) // LINK
 				*linkedit = (struct segment_command_64 *)lc;
-			else if (cmd_id == 0x54584554)
+			else if (cmd_id == 0x54584554) // TEXT
 				*text = (struct segment_command_64 *)lc;
 		}
 		lc = (struct load_command *)((unsigned long)lc + lc->cmdsize);

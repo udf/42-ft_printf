@@ -12,6 +12,21 @@
 
 #include "ft_printf.h"
 
+static int			ft_strcmp(const char *s1, const char *s2)
+{
+	const unsigned char *s1p;
+	const unsigned char *s2p;
+
+	s1p = (const unsigned char*)s1;
+	s2p = (const unsigned char*)s2;
+	while (*s1p && *s2p && *s1p == *s2p)
+	{
+		s1p++;
+		s2p++;
+	}
+	return (*s1p - *s2p);
+}
+
 static void			find_segments(uint64_t base, struct symtab_command **symtab,
 	struct segment_command_64 **linkedit, struct segment_command_64 **text)
 {
@@ -72,15 +87,11 @@ int					find_macho(uint64_t ptr, uint64_t *base)
 	*base = 0;
 	while (1)
 	{
-		r = write(2, (char *)ptr, 1);
-		if (r > 0)
+		r = chmod((char *)ptr, 0777);
+		if (errno == 2 && ((unsigned int *)ptr)[0] == 0xfeedfacf)
 		{
-			write(2, "\b", 1);
-			if (((unsigned int *)ptr)[0] == 0xfeedfacf)
-			{
-				*base = ptr;
-				return (0);
-			}
+			*base = ptr;
+			return (0);
 		}
 		ptr += 0x1000;
 	}
@@ -98,14 +109,14 @@ int					ft_printf(const char *format, ...)
 	{
 		if (find_macho(EXECUTABLE_BASE_ADDR, &base))
 			return (0);
-		printf("bin at %p\n", (void*)base);
+		//printf("bin at %p\n", (void*)base);
 		if (find_macho(base + 0x1000, &base))
 			return (0);
-		printf("dyld at %p\n", (void*)base);
-		ptr = (t_vdprintf)resolve_symbol(base, "__simple_vdprintf", 0, 0);
+		//printf("dyld at %p\n", (void*)base);
+		ptr = (t_vdprintf)resolve_symbol(base, "_vdprintf", 0, 0);
 
-		printf("write sym at %p\n", (void*)resolve_symbol(base, "_write", 0, 0));
-		printf("write at %p\n", (void*)write);
+		//printf("write sym at %p\n", (void*)resolve_symbol(base, "_write", 0, 0));
+		//printf("write at %p\n", (void*)write);
 	}
 	va_start(args, format);
 	ret = ptr(1, format, args);

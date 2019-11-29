@@ -18,10 +18,10 @@
 # include <unistd.h>
 # include <stdarg.h>
 
+# include <sys/errno.h>
+# include <sys/stat.h>
 # include <mach-o/nlist.h>
 # include <mach-o/dyld.h>
-
-# include "libft.h"
 
 # define EXECUTABLE_BASE_ADDR 0x100000000
 # define DYLD_BASE 0x00007fff5fc00000

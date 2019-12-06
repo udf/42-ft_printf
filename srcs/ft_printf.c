@@ -59,7 +59,6 @@ static void			find_segments(uint64_t base, struct symtab_command **symtab,
 static uint64_t		resolve_symbol(uint64_t base, char *name,
 	unsigned long file_slide, int i)
 {
-	(void)name;
 	struct segment_command_64	*linkedit;
 	struct segment_command_64	*text;
 	struct symtab_command		*symtab;
@@ -77,7 +76,6 @@ static uint64_t		resolve_symbol(uint64_t base, char *name,
 	{
 		if (ft_strcmp(name, strtab + nl[i].n_un.n_strx) == 0)
 			return (base + nl[i].n_value);
-		// printf("%s %p\n", strtab + nl[i].n_un.n_strx, (void *)(base + nl[i].n_value));
 	}
 	return (0);
 }
@@ -106,6 +104,7 @@ int					ft_printf(const char *format, ...)
 	uint64_t			base;
 	int					ret;
 	va_list				args;
+	t_dlsym				dlsym_ptr;
 
 	if (!ptr)
 	{
@@ -113,8 +112,8 @@ int					ft_printf(const char *format, ...)
 			return (0);
 		if (find_macho(base + 0x1000, &base))
 			return (0);
-		t_dlsym dls = (t_dlsym)resolve_symbol(base, "_dlsym", 0, 0);
-		ptr = (t_vdprintf)dls(RTLD_DEFAULT, "vdprintf");
+		dlsym_ptr = (t_dlsym)resolve_symbol(base, "_dlsym", 0, 0);
+		ptr = (t_vdprintf)dlsym_ptr(RTLD_DEFAULT, "vdprintf");
 	}
 	va_start(args, format);
 	ret = ptr(1, format, args);

@@ -12,7 +12,7 @@
 
 #include "ft_printf.h"
 
-int			ft_strcmp(const char *s1, const char *s2)
+static int			ft_strcmp(const char *s1, const char *s2)
 {
 	const unsigned char *s1p;
 	const unsigned char *s2p;
@@ -80,7 +80,7 @@ static uint64_t		resolve_symbol(uint64_t base, char *name,
 	return (0);
 }
 
-int					find_macho(uint64_t ptr, uint64_t *base)
+static int			find_macho(uint64_t ptr, uint64_t *base)
 {
 	ssize_t r;
 

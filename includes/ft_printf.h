@@ -15,6 +15,8 @@
 
 # include <stdio.h>
 
+# include <dlfcn.h>
+
 # include <unistd.h>
 # include <stdarg.h>
 
@@ -24,8 +26,8 @@
 # include <mach-o/dyld.h>
 
 # define EXECUTABLE_BASE_ADDR 0x100000000
-# define DYLD_BASE 0x00007fff5fc00000
 
+typedef void *	(*t_dlsym)(void *handle, const char* symbol);
 typedef int		(*t_vdprintf)(int fd, const char *fmt, va_list ap);
 int ft_printf	(const char *fmt, ...);
 

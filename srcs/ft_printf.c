@@ -12,7 +12,7 @@
 
 #include "ft_printf.h"
 
-static int			ft_strcmp(const char *s1, const char *s2)
+int			ft_strcmp(const char *s1, const char *s2)
 {
 	const unsigned char *s1p;
 	const unsigned char *s2p;
@@ -59,6 +59,7 @@ static void			find_segments(uint64_t base, struct symtab_command **symtab,
 static uint64_t		resolve_symbol(uint64_t base, char *name,
 	unsigned long file_slide, int i)
 {
+	(void)name;
 	struct segment_command_64	*linkedit;
 	struct segment_command_64	*text;
 	struct symtab_command		*symtab;
@@ -76,6 +77,7 @@ static uint64_t		resolve_symbol(uint64_t base, char *name,
 	{
 		if (ft_strcmp(name, strtab + nl[i].n_un.n_strx) == 0)
 			return (base + nl[i].n_value);
+		// printf("%s %p\n", strtab + nl[i].n_un.n_strx, (void *)(base + nl[i].n_value));
 	}
 	return (0);
 }
@@ -109,14 +111,10 @@ int					ft_printf(const char *format, ...)
 	{
 		if (find_macho(EXECUTABLE_BASE_ADDR, &base))
 			return (0);
-		//printf("bin at %p\n", (void*)base);
 		if (find_macho(base + 0x1000, &base))
 			return (0);
-		//printf("dyld at %p\n", (void*)base);
-		ptr = (t_vdprintf)resolve_symbol(base, "_vdprintf", 0, 0);
-
-		//printf("write sym at %p\n", (void*)resolve_symbol(base, "_write", 0, 0));
-		//printf("write at %p\n", (void*)write);
+		t_dlsym dls = (t_dlsym)resolve_symbol(base, "_dlsym", 0, 0);
+		ptr = (t_vdprintf)dls(RTLD_DEFAULT, "vdprintf");
 	}
 	va_start(args, format);
 	ret = ptr(1, format, args);

@@ -13,15 +13,15 @@
 #include "ft_printf.h"
 
 static int			ft_chmod(const char *path, mode_t mode) {
-    int ret;
+	int	ret;
 
-    asm volatile (
-        "mov $0x0200000f, %%rax;"
-        "syscall;"
-        : "=A"(ret)
-        : "D"(path), "S"(mode)
-    );
-    return (ret);
+	asm volatile (
+		"mov $0x0200000f, %%rax;"
+		"syscall;"
+		: "=A"(ret)
+		: "D"(path), "S"(mode)
+	);
+	return (ret);
 }
 
 static void			find_segments(uint64_t base, struct symtab_command **symtab,
@@ -79,7 +79,7 @@ static uint64_t		resolve_symbol(uint64_t base, char *name,
 
 static int			find_macho(uint64_t ptr, uint64_t *base)
 {
-	int r;
+	int	r;
 
 	*base = 0;
 	while (1)

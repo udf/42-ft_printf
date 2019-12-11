@@ -13,11 +13,8 @@
 #ifndef FT_PRINTF_H
 # define FT_PRINTF_H
 
-# include <stdio.h>
-
 # include <dlfcn.h>
 
-# include <unistd.h>
 # include <stdarg.h>
 
 # include <sys/errno.h>
@@ -31,5 +28,4 @@ typedef void*	(*t_dlsym)(void *handle, const char* symbol);
 typedef int		(*t_vdprintf)(int fd, const char *fmt, va_list ap);
 int				ft_printf(const char *fmt, ...);
 int				ft_strcmp(const char *s1, const char *s2);
-
 #endif

@@ -10,7 +10,7 @@
 #                                                                              #
 # **************************************************************************** #
 
-FUNCS=ft_printf
+FUNCS=ft_printf ft_strcmp
 NAME=libftprintf.a
 INCLUDES=ft_printf
 HEADERS=$(INCLUDES:%=includes/%.h)

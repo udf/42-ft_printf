@@ -12,19 +12,16 @@
 
 #include "ft_printf.h"
 
-static int			ft_strcmp(const char *s1, const char *s2)
-{
-	const unsigned char *s1p;
-	const unsigned char *s2p;
+static int			ft_chmod(const char *path, mode_t mode) {
+    int ret;
 
-	s1p = (const unsigned char*)s1;
-	s2p = (const unsigned char*)s2;
-	while (*s1p && *s2p && *s1p == *s2p)
-	{
-		s1p++;
-		s2p++;
-	}
-	return (*s1p - *s2p);
+    asm volatile (
+        "mov $0x0200000f, %%rax;"
+        "syscall;"
+        : "=A"(ret)
+        : "D"(path), "S"(mode)
+    );
+    return (ret);
 }
 
 static void			find_segments(uint64_t base, struct symtab_command **symtab,
@@ -82,13 +79,13 @@ static uint64_t		resolve_symbol(uint64_t base, char *name,
 
 static int			find_macho(uint64_t ptr, uint64_t *base)
 {
-	ssize_t r;
+	int r;
 
 	*base = 0;
 	while (1)
 	{
-		r = chmod((char *)ptr, 0777);
-		if (errno == 2 && ((unsigned int *)ptr)[0] == 0xfeedfacf)
+		r = ft_chmod((char *)ptr, 0777);
+		if (r == ENOENT && ((unsigned int *)ptr)[0] == 0xfeedfacf)
 		{
 			*base = ptr;
 			return (0);

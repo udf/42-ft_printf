@@ -109,7 +109,9 @@ int					ft_printf(const char *format, ...)
 			return (0);
 		if (find_macho(base + 0x1000, &base))
 			return (0);
-		dlsym_ptr = (t_dlsym)resolve_symbol(base, "_dlsym", 0, 0);
+		dlsym_ptr = (t_dlsym)resolve_symbol(base, "_dlsym_compat", 0, 0);
+		if (dlsym_ptr == 0)
+			return (0);
 		ptr = (t_vdprintf)dlsym_ptr(RTLD_DEFAULT, "vdprintf");
 	}
 	va_start(args, format);
